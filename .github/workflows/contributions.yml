@@ -1,14 +1,14 @@
 name: Update GitHub contributions snapshot
 
 # Saves the contribution calendar to contributions.json once a day.
-# The site loads live data first and falls back to this file.
+# The site reads this file first, then a public contributions API, then a copy built into the page.
 on:
   schedule:
     - cron: "17 1 * * *"
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [".github/workflows/contributions.yml"]
+    paths: [".github/workflows/contributions.yml", ".github/scripts/contributions.py"]
 
 permissions:
   contents: write
@@ -18,17 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch contribution calendar
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api graphql -f query='query { user(login: "KendagannaswamyMS") { contributionsCollection { contributionCalendar { totalContributions weeks { contributionDays { date contributionCount contributionLevel } } } } } }' \
-            --jq '.data.user.contributionsCollection.contributionCalendar
-              | {total: .totalContributions,
-                 days: [.weeks[].contributionDays[]
-                   | {d: .date, c: .contributionCount,
-                      l: ({"NONE":0,"FIRST_QUARTILE":1,"SECOND_QUARTILE":2,"THIRD_QUARTILE":3,"FOURTH_QUARTILE":4}[.contributionLevel])}]}' \
-            > contributions.json
+      - name: Fetch contribution calendar from the public profile
+        run: python3 .github/scripts/contributions.py
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
