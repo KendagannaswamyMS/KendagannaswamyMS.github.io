@@ -237,6 +237,10 @@ a.cline:hover { border-color: var(--signal) }
 .pubs-h2 { margin-top: 40px }
 .copybtn { font: 500 .75rem var(--f-mono); background: transparent; color: var(--signal); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; flex: none }
 .teach { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px }
+.cardlink { color: inherit; text-decoration: none }
+.cardlink .more { font: 500 .75rem var(--f-mono); color: var(--accent); letter-spacing: .06em; text-transform: uppercase; margin-top: 4px }
+.cardlink .more b { display: inline-block; transition: transform .25s }
+.cardlink:hover .more b { transform: translateX(4px) }
 @media (max-width: 860px) { .teach { grid-template-columns: 1fr } }
 /* custom cursor: water droplet dot + survey ring, desktop pointers only */
 .cur-on, .cur-on a, .cur-on button { cursor: none }
@@ -446,7 +450,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         <h2>In the classroom and beyond</h2>
       </div>
       <div class="teach">
-        <article class="tilt reveal"><span class="code">FDP · 2026</span><h3>Generative AI for JSS Polytechnic</h3><p>A three-day faculty development programme on generative AI, organised through JSS TED.</p></article>
+        <a class="tilt reveal cardlink" href="https://kendagannaswamyms.github.io/fdp/"><span class="code">FDP · 2026</span><h3>Generative AI for JSS Polytechnic</h3><p>A three-day faculty development programme on generative AI, organised through JSS TED.</p><span class="more">View programme <b>→</b></span></a>
         <article class="tilt reveal"><span class="code">CII · 2026</span><h3>CII Edu-Tech Expo 2026</h3><p>"Powering Education with Technology", CII Southern Region, Chennai Trade Centre.</p></article>
       </div>
     </div>
