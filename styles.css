@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
 :root {
   color-scheme: light;
   --ink: #192438;
@@ -22,7 +20,7 @@ body {
   margin: 0;
   background: var(--page);
   color: var(--ink);
-  font-family: "DM Sans", sans-serif;
+  font-family: system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.7;
 }
@@ -60,7 +58,7 @@ a {
 }
 
 .wordmark {
-  font-family: "Manrope", sans-serif;
+  font-family: system-ui, sans-serif;
   font-size: 1.25rem;
   font-weight: 800;
   text-decoration: none;
@@ -115,7 +113,7 @@ p {
 h1,
 h2,
 h3 {
-  font-family: "Manrope", sans-serif;
+  font-family: system-ui, sans-serif;
   line-height: 1.2;
 }
 
