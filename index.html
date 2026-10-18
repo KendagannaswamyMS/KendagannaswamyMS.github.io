@@ -174,6 +174,28 @@ a.cline:hover { border-color: var(--signal) }
 .portrait.pix-wait { box-shadow: none; border-color: transparent }
 .portrait.pix-wait img { opacity: 0; filter: blur(8px) saturate(2) }
 .side { display: grid; gap: 24px; justify-items: start }
+.gh { border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(160deg, var(--ground-2), var(--ground)); padding: 20px 22px; display: grid; gap: 14px }
+#about { overflow-x: clip }
+.gh > * { min-width: 0 }
+.gh-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.gh-total { font-size: var(--s1); color: var(--ink-dim) }
+.gh-total b { font: 700 var(--s2) var(--f-display); color: var(--ink) }
+.gh-link { font: 500 .8125rem var(--f-mono); color: var(--signal); text-decoration: none }
+.gh-scroll { overflow-x: auto; padding-bottom: 4px }
+.gh-cal { display: grid; grid-template-columns: 30px repeat(53, 13px); grid-template-rows: 16px repeat(7, 13px); gap: 3px; width: max-content; font: 400 .6875rem var(--f-mono); color: var(--ink-dim) }
+.gh-cal .m { grid-row: 1; white-space: nowrap }
+.gh-cal .wd { grid-column: 1; line-height: 13px }
+.gh-cal .c, .gh-legend i { width: 13px; height: 13px; border-radius: 3px; background: #10201f }
+.gh-cal .c { opacity: 0; transform: scale(.3) }
+.gh-cal.in .c { opacity: 1; transform: none; transition: opacity .4s ease, transform .5s cubic-bezier(.2,.9,.3,1.4); transition-delay: var(--d) }
+.gh-cal .c:hover { outline: 1px solid var(--ink); outline-offset: 1px }
+.l1 { background: color-mix(in srgb, #10201f 55%, var(--signal)) !important }
+.l2 { background: color-mix(in srgb, #10201f 35%, var(--signal)) !important }
+.l3 { background: color-mix(in srgb, #10201f 15%, var(--signal)) !important }
+.l4 { background: var(--signal) !important; box-shadow: 0 0 8px color-mix(in srgb, var(--signal) 60%, transparent) }
+.gh-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font: 400 .75rem var(--f-mono); color: var(--ink-dim) }
+.gh-legend { display: inline-flex; align-items: center; gap: 4px }
+@media (prefers-reduced-motion: reduce) { .gh-cal .c { opacity: 1; transform: none } }
 .sig { position: relative; width: 100%; max-width: 340px; padding-top: 8px }
 .sig svg { display: block; width: 100%; height: auto; overflow: visible }
 .sig path { fill: var(--ink); stroke: var(--accent); stroke-width: .7; stroke-linecap: round; stroke-linejoin: round }
@@ -369,6 +391,20 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         <article class="tilt reveal"><h3>Enterprise systems</h3><div class="chips"><span>University ERP</span><span>Systems analysis</span><span>CRM</span><span>Workflows &amp; approvals</span><span>Role-based access</span><span>Integrated records</span></div></article>
         <article class="tilt reveal"><h3>Web &amp; mobile</h3><div class="chips"><span>AngularJS</span><span>Back-end development</span><span>Web applications</span><span>Android app</span><span>Google Play release</span></div></article>
         <article class="tilt reveal"><h3>Embedded</h3><div class="chips"><span>Microcontrollers</span></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="github">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="layer">GitHub</span>
+        <h2>Building in the open</h2>
+      </div>
+      <div class="gh reveal">
+        <div class="gh-top"><p class="gh-total"><b id="gh-total">…</b> contributions in the last year</p><a class="gh-link" href="https://github.com/KendagannaswamyMS" target="_blank" rel="noopener">@KendagannaswamyMS →</a></div>
+        <div class="gh-scroll"><div class="gh-cal" id="gh-cal" role="img" aria-label="GitHub contribution calendar for the last year"></div></div>
+        <div class="gh-foot"><span id="gh-note">Loading from GitHub…</span><span class="gh-legend">Less <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> More</span></div>
       </div>
     </div>
   </section>
@@ -571,6 +607,45 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
     btn.hidden = false; btn.addEventListener("click", play);
     const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); setTimeout(play, 300); } }, { threshold: .6 });
     io.observe(box);
+  })();
+
+  /* GitHub calendar: live data from a public contributions API, with a daily snapshot in this repository as backup */
+  (function () {
+    const cal = document.getElementById("gh-cal"); if (!cal) return;
+    const note = document.getElementById("gh-note"), total = document.getElementById("gh-total"), USER = "KendagannaswamyMS";
+    const live = () => fetch(`https://github-contributions-api.jogruber.de/v4/${USER}?y=last`).then(r => r.ok ? r.json() : Promise.reject())
+      .then(j => ({ total: j.total.lastYear, days: j.contributions.map(c => ({ d: c.date, c: c.count, l: c.level })) }));
+    const snap = () => fetch("contributions.json", { cache: "no-store" }).then(r => r.ok ? r.json() : Promise.reject());
+    live().catch(snap).then(draw, () => { note.innerHTML = 'Couldn\'t load the graph right now. <a href="https://github.com/' + USER + '" target="_blank" rel="noopener">See it on GitHub</a>.'; total.textContent = "—"; });
+    function draw(data) {
+      const days = data.days.slice().sort((a, b) => a.d < b.d ? -1 : 1).slice(-371);
+      const first = new Date(days[0].d + "T00:00:00"), pad = first.getDay(), MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const cols = Math.ceil((days.length + pad) / 7), frag = document.createDocumentFragment();
+      cal.style.gridTemplateColumns = `30px repeat(${cols}, 13px)`;
+      [[1, "Mon"], [3, "Wed"], [5, "Fri"]].forEach(([r, t]) => { const e = document.createElement("span"); e.className = "wd"; e.style.gridRow = r + 2; e.textContent = t; frag.appendChild(e); });
+      let lastM = -1;
+      days.forEach((day, i) => {
+        const k = i + pad, col = Math.floor(k / 7), row = k % 7, dt = new Date(day.d + "T00:00:00");
+        if (row === 0 || i === 0) { const m = dt.getMonth(); if (m !== lastM && col < cols - 1) { lastM = m; const e = document.createElement("span"); e.className = "m"; e.style.gridColumn = col + 2; e.textContent = MON[m]; frag.appendChild(e); } }
+        const c = document.createElement("i"); c.className = "c" + (day.l ? " l" + day.l : "");
+        c.style.gridColumn = col + 2; c.style.gridRow = row + 2; c.style.setProperty("--d", (col * 14 + row * 6) + "ms");
+        c.title = `${day.c} contribution${day.c === 1 ? "" : "s"} on ${dt.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}`;
+        frag.appendChild(c);
+      });
+      cal.appendChild(frag);
+      const scroller = cal.parentElement; scroller.scrollLeft = scroller.scrollWidth;
+      note.textContent = "Updated from GitHub";
+      // count up the total and ripple the cells in when the card scrolls into view
+      const go = () => {
+        cal.classList.add("in");
+        if (reduce) { total.textContent = data.total.toLocaleString(); return; }
+        const t0 = performance.now();
+        (function up(now) { const k = Math.min(1, (now - t0) / 1400); total.textContent = Math.round(data.total * (1 - Math.pow(1 - k, 3))).toLocaleString(); if (k < 1) requestAnimationFrame(up); })(t0);
+      };
+      if (!("IntersectionObserver" in window)) return go();
+      const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { threshold: .3 });
+      io.observe(cal);
+    }
   })();
 
   /* custom cursor: the dot follows the pointer, the ring trails behind and grows over links and buttons */
