@@ -149,6 +149,8 @@ section.block { padding-block: 96px; border-bottom: 1px solid var(--line) }
 @media (max-width: 600px) { .pubs li { grid-template-columns: 1fr } .pubs .yr { grid-row: auto } }
 
 .stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px }
+.stack .wide { grid-column: span 2 }
+@media (max-width: 560px) { .stack .wide { grid-column: auto } }
 .chips { display: flex; flex-wrap: wrap; gap: 8px }
 .chips span { font: 500 .8125rem var(--f-mono); padding: 6px 10px; border-radius: 6px; background: color-mix(in srgb, var(--signal) 9%, transparent); border: 1px solid color-mix(in srgb, var(--signal) 22%, transparent); color: var(--ink) }
 @media (max-width: 960px) { .stack { grid-template-columns: 1fr 1fr } }
@@ -234,7 +236,7 @@ a.cline:hover { border-color: var(--signal) }
 .tag { font: 500 .6875rem var(--f-mono); letter-spacing: .06em; padding: 2px 6px; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); color: var(--accent); margin-left: 6px; white-space: nowrap }
 .pubs-h2 { margin-top: 40px }
 .copybtn { font: 500 .75rem var(--f-mono); background: transparent; color: var(--signal); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; flex: none }
-.teach { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px }
+.teach { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px }
 @media (max-width: 860px) { .teach { grid-template-columns: 1fr } }
 /* custom cursor: water droplet dot + survey ring, desktop pointers only */
 .cur-on, .cur-on a, .cur-on button { cursor: none }
@@ -419,8 +421,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         <article class="tilt reveal"><h3>Multimodal &amp; GenAI</h3><div class="chips"><span>Generative AI</span><span>Sentiment analysis</span><span>Early fusion</span><span>Cross-modal attention</span><span>RAG</span><span>OCR</span></div></article>
         <article class="tilt reveal"><h3>Geospatial</h3><div class="chips"><span>Remote sensing</span><span>GIS</span><span>MCDA</span><span>Susceptibility mapping</span><span>Vulnerability analysis</span></div></article>
         <article class="tilt reveal"><h3>Enterprise systems</h3><div class="chips"><span>University ERP</span><span>Systems analysis</span><span>CRM</span><span>Workflows &amp; approvals</span><span>Role-based access</span><span>Integrated records</span></div></article>
-        <article class="tilt reveal"><h3>Web &amp; mobile</h3><div class="chips"><span>AngularJS</span><span>Back-end development</span><span>Web applications</span><span>Android app</span><span>Google Play release</span></div></article>
-        <article class="tilt reveal"><h3>Embedded</h3><div class="chips"><span>Microcontrollers</span></div></article>
+        <article class="tilt reveal wide"><h3>Web &amp; mobile</h3><div class="chips"><span>AngularJS</span><span>Back-end development</span><span>Web applications</span><span>Android app</span><span>Google Play release</span></div></article>
       </div>
     </div>
   </section>
@@ -445,7 +446,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         <h2>In the classroom and beyond</h2>
       </div>
       <div class="teach">
-        <article class="tilt reveal"><span class="code">24EE430 · 2025–26</span><h3>Microcontrollers</h3><p>Course taught to engineering undergraduates at JSSSTU.</p></article>
         <article class="tilt reveal"><span class="code">FDP · 2026</span><h3>Generative AI for JSS Polytechnic</h3><p>A three-day faculty development programme on generative AI, organised through JSS TED.</p></article>
         <article class="tilt reveal"><span class="code">CII · 2026</span><h3>CII Edu-Tech Expo 2026</h3><p>"Powering Education with Technology", CII Southern Region, Chennai Trade Centre.</p></article>
       </div>
@@ -795,7 +795,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   const sun = new T.DirectionalLight(0xffffff, 1.1); sun.position.set(-5, 6, 8); scene.add(sun);
 
   // tech stack orbit: text sprites on a tilted ring
-  const STACK = ["AngularJS", "Machine learning", "U-Net", "RAG", "OCR", "Generative AI", "GIS", "Remote sensing", "MaxEnt", "Android", "Back-end", "Sentiment AI", "ERP systems", "Microcontrollers"];
+  const STACK = ["AngularJS", "Machine learning", "U-Net", "RAG", "OCR", "Generative AI", "GIS", "Remote sensing", "MaxEnt", "Android", "Back-end", "Sentiment AI", "ERP systems"];
   const ring = new T.Group(); ring.rotation.set(-.32, 0, .18); rig.add(ring);
   const RR = R * 1.8, tags = [];
   function makeTags() {
